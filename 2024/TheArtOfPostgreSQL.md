@@ -62,9 +62,66 @@ https://theartofpostgresql.com/
 * Page 111 - Remember that one can do comparison of composite values - e.g. `and row(lap, position) > (1, 3)`
 * Page 114 - Using `lag(nbraces, 1) over(order by decade)` to see the previous value of `nbraces`. PostgreSQL has 
   additional aggregate functions like `bool_and`
+* Page 115 - Using `filter(where)` - i.e. `count(*) filter(where position is null) as outs` to only count the rows that 
+  pass the filter
 * Page 116 - Having clauses are not allowed to reference select output aliases to avoid any ambiguity
+* Page 117 - Grouping sets allow one to group by multiple sets of columns - even the empty set - in one pass of the relation
+* Page 118 - Syntactic sugar for grouping sets:
+  * `rollup` - `rollup(c1, c2, c3)` is syntactic sugar for `(c1, c2, c3), (c1, c2), (c1), ()` (so the assumption is that 
+    `c1 > c2 > c3`).
+  * `cube` - `cube(c1, c2)` is syntactic sugar for `(c1, c2), (c1), (c2), ()`, so all possible grouping sets based on the
+    specified columns.
+* Page 120 - Common Table Expressions allow us - using the `with` clause - to run a subquery before and then refer to its result
+  like any other relation. It is possible to have multiple CTEs and have later CTEs refer to the previous CTEs.
+* Page 124 - `distinct on` can be used to keep only the first row of each set of rows where the given expressions evaluate
+  to equal. Note that order is unspecified unless using an `order by` clause.
+* Page 125 - Set operations: `union` (`union all`), `intersect`, and `except`.
+* Page 129 - `null` is different in SQL - in SQL `null = null` returns `null`. One can use `is distinct from` and
+  `is not distinct` for comparisons where "`null` is the same as `null`".
+* Page 131 - `not null` constraints
+* Page 135 - Window functions - for each row in the input one has access to a "frame" of the data. E.g. `over (order by x)`
+  can be read as "order by x rows between unbounded preceding and current row".
+* Page 137 - One can use `partition by` to specify "peer rows" - i.e. rows that share a property with the "current row".
+* Page 138 - One can use `any` and `all` against a window frame - and similarly for `sum`, `min`, etc.
+* Page 139 - It is possible to name a window defition - `window w as (order by position)` - so one can avoid repeating it in
+  multiple places. `lag` and `lead` functions to refer to prev and next rows, `ntile(x)` to partition the rows into `x` partitions
+* Page 142 - SQL is a strongly typed programming language
+* Page 143 - Cross join aka Cartesian product
+* Page 144 - Join types: Inner joins, outer joins (left/right), full outer joins, lateral joins
+* Page 148 - Use standard SQL for readability - not for portability. 
+* Page 154 - Guaranteeing overall consistency - strongly typed data types
+* Page 157 - PostgreSQL implements functions and operator polymorphism
+* Page 160 - `TABLESAMPLE` to retrieve a subset of the rows in that table
+* Page 161 - Boolean data type. Use `is` rather than `=` (due to `null`). Aggregation via `bool_and` and `bool_or`
+* Page 163 - Character and Text. Note that "text" and "varchar" are the same, so `varshar(15)` is a text column with the 
+  check constraint of 15 characters. There are lots of string functions and operators. There is also support for regular
+  expressions - e.g. using regexp_split_to_table` or `regexp_split_to_array`
+* Page 167 - full text search with a lot of additional functionality
+* Page 168 - server/client encoding
+* Page 170 - Numbers. SQL is statically typed, so PostgreSQL must determine the data types of columns for input and output
+  before planning and execution.
+* Page 172 - Floating point numbers and sequences and serial data type
+* Page 174 - Universally Unique Identifier - UUID - 128-bit number
+* Page 175 - Bytea and Bitstring and Date/Time and Time Zones - always use timestamps with time zone (it is the same size as
+  without).
+* Page 178 - We need context for the time - i.e. the timezone.
+* Page 179 - Time intervals. PostgreSQL calculates correctly intervals that start as certain dates or timestamps.
+* Page 181 - Date/Time Processing and Querying
+* Page 183 - `percentile_cont`
+* Page 185 - PostgreSQL suppports different network address types: cidr, inet, and macaddr. `set_masklen`
+* Page 188 - Ranges - two dimensions of data in a single column, e.g. date-range. One can use
+  `exclude using gist (currency with =, validity with &&)` to ensure that we don't have overlapping validity periods for the 
+  same currency.
+* Page 192 - Denormalized Data Types: Arrays and json. Use array when one is mostly using the array as a whole.
+
+At page 195
+
 
 
 # Errata
 * Page 93 - "races table has eight column." => races table has eight columns."
 * Page 108 - `decades.decade` is not needed in `group by decades.decade, drivers.driverid` as we already use this in the filter
+* Page 139 - I guess `over(order by fastestlapspeed::numeric)` should be ordered descending to match "his position in terms
+  offastest lap speed". Also the text on page 140 is wrong as "Gutiérrez" and "Sutil" had the slowest fastestlapspeed
+* Page 190 - `\index{Operators!@}` looks like a LaTeX error (I guess due to the special characters)
+* Page 378 - `\index{Operators!%}` looks like a LaTeX error. The same kind of error on 379.
