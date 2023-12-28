@@ -113,10 +113,32 @@ https://theartofpostgresql.com/
   `exclude using gist (currency with =, validity with &&)` to ensure that we don't have overlapping validity periods for the 
   same currency.
 * Page 192 - Denormalized Data Types: Arrays and json. Use array when one is mostly using the array as a whole.
-
-At page 195
-
-
+* Page 195 - `array_agg` create an array from a sequence of elements
+* Page 196 - `unnest` creates a relation from the an array of elements
+* Page 198 - Some PostgreSQL array functions show a quadratic behaviour, so prefer `unnest` instead of looping
+* Page 198 - It is possible to create (composite) types separately from the table.
+* Page 199 - XML and PostgreSQL. One can use PL/XSLT, but XML in PostgreSQL has not been used much and indexing is limited
+* Page 201 - PostgreSQL also supports JSON. Initially, underlying datatype was actually "text" with the verification that it 
+  is valid json input, but later jsonb (binary) was added with a lot of extra functionality, so "json" <> "jsonb".
+* Page 203 - Enum - added to support migrations from MySQL. Enum vs "reference table and a foreign key"
+* Page 212 - application state vs database model. The first focus on interactions whereas the latter has consistency as
+  focus.
+* Page 214 - psql is the SQL REPL for PostgreSQL.
+* Page 215 - separate databases vs separate schemas - each database is an isolated environment, but one can join between schemas.
+* Page 220 - For iterative experimentation of modelling one can drop - and recreate - the entire schema via
+  `drop schema NAME cascade`.
+* Page 226 - Database normalization is about reducing data redundancy and improving data integrity.
+* Page 227 - Many design principles of the Unix operating system - 
+  https://hanfak.gitbook.io/workspace/general-paradigms/principles/unix-philosophy - also apply to databases.
+* Page 229 - Normal forms - from 1st Normal Form to Domain-Key Normal Form
+* Page 230 - Update anomaly - only some of the redundant data is updated - and Insertion anomaly - cannot record data properly
+  without using `null`, and deletion anomaly - deletion of data representing completely different facts. Databases in BCNF or 4NF
+  avoids these issues.
+* Page 231 - Modeling an Address Field. The normalization depends on the usage/application.
+* Page 233 - The point of a proper data model is to make it easy for the application to process the information it needs,
+  and to ensure global consistency for the information.
+* Page 233 - Primary keys can make the database be 1NF - if we use natural keys and not surrogate keys.
+* Page 236 - Use surrogate key and unique constraint to ensure 1NF
 
 # Errata
 * Page 93 - "races table has eight column." => races table has eight columns."
@@ -124,4 +146,7 @@ At page 195
 * Page 139 - I guess `over(order by fastestlapspeed::numeric)` should be ordered descending to match "his position in terms
   offastest lap speed". Also the text on page 140 is wrong as "Gutiérrez" and "Sutil" had the slowest fastestlapspeed
 * Page 190 - `\index{Operators!@}` looks like a LaTeX error (I guess due to the special characters)
+* Page 220 - Is there missing a "in case" in "...the easiest way around this _____ you already committed the data previously"
+* Page 235 - Perhaps add "within a category" in "only publish with a title once ___ in the whole history of 
+  our publication system" to make it more explicit
 * Page 378 - `\index{Operators!%}` looks like a LaTeX error. The same kind of error on 379.
