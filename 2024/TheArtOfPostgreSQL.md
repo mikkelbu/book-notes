@@ -138,7 +138,73 @@ https://theartofpostgresql.com/
 * Page 233 - The point of a proper data model is to make it easy for the application to process the information it needs,
   and to ensure global consistency for the information.
 * Page 233 - Primary keys can make the database be 1NF - if we use natural keys and not surrogate keys.
-* Page 236 - Use surrogate key and unique constraint to ensure 1NF
+* Page 236 - Use surrogate key and unique constraint to ensure 1NF (if one cannot use natural keys)
+* Page 236 - Use foreign key constraint to reference information in other tables. The target must be unique - enforced using
+  a unique or primary key constraint.Remember to create indexes at the source side (relevant most of the time).
+* Page 236 - Not null constraint
+* Page 237 - Check constraints (or data domains)
+* Page 238 - Exclusion constraints which can be considered to be generalized unique constraints with a custom operator choice.
+* Page 253 - The gist index on the location supports index scan based lookups in several situations, including the kNN lookup,
+  also known as the nearest neighbor lookup.
+* Page 257 - Modelization Anti-Patterns: "Entity attribute values" is a design that tries to accommodate with a
+  lack of specifications. Easy to add things, but difficult to make sense of the accumulated data. Problems:
+  * Stringly-typed values and keys
+  * We need to perform extra work to use the data
+* Page 260 - Modelization Anti-Patterns: "Multiple values per column" which breakes 1NF
+* Page 264 - Fully normalized schemas often have a high number of tables and references in between them which can affect
+  performance or making it difficult to use, so sometimes one needs to denormalize to get a better trade-off, but only do this
+  if there is a need for it.
+* Page 267 - As it’s impossible to optimize something you didn’t measure, first normalize your model, benchmark it, and then see
+  about optimizing.
+* Page 268 - Using a materialized view as cache for information that is needed much more than it is updated.
+* Page 269 - History Tables (to keep old versions of the entities) and Audit Trails. One can use `jsonb` or `hstore` to
+  implement history tables as this support evolving entities.
+* Page 271 - Validity period using range data types and a exclusion constraint
+* Page 272 - One can use default values or before triggers to implement pre-computed values
+* Page 273 - One can use enums or having multiple values per attribute to denormalize the schema (and thus reducing the 
+  number of tables and joins in queries)
+* Page 274 - Partitioning the table into multiple tables
+* Page 276 - NoSQL - often relaxes one or more of the ACID guarantees.
+* Page 277 - PostgreSQL and schemaless design. `jsonb_each()` to expand the top-level JSON object into a set of key/value pairs.
+* Page 281 - `synchronous_commit` for tweaking durability requirement
+* Page 282 - Scaling out is not natively supported in PostgreSQL at the moment. Logical replication from version 10.
+* Page 285 - Comparison of "schema-less" vs "relational data model"
+* Page 292 - A normalized schema helps to avoid concurrent update activity on the same rows from occuring often.
+* Page 295 - The returning clause is PostgreSQL specific and avoids a network roundtrip.
+* Page 296 - `insert into ... values` (either use copy or many inserts as in one statement) and `insert into ... select`
+* Page 298 - An `update` both removes the old data and inserts the new - PostgreSQL using system columns `xmin` and `xmax`
+  to track the visibility, so that concurrent statements ahve a consistent view of the data.
+* Page 299 - Row locking is done per tuple in PostgreSQL.
+* Page 303 - The delete statement allows marking tuples for removal, and the actual removal of on-disk tuples first happens
+  with vacuum or PostgreSQL can reuse the space for an insert statement when the tuple is no longer visisble from any transaction.
+* Page 304 - We can run a delete statement in a CTE and then do an aggregate query on the returned data
+```
+with deleted_rows as
+(
+  delete from....
+  returning *
+)
+select min(userid), max(userid),
+count(*),
+array_agg(uname)
+from deleted_rows;
+```
+* Page 305 - Tuples vs rows - a single row might exist on-disk as more than one tuple at any time, with only one of them
+  visible to any single transaction.
+* Page 305 - truncate table. If we want to delete most entries, but keep some, then it can be more efficient to create a new table
+  and then swap this table in for the old table - `create table new_name (like name including all);`.
+* Page 308 - a transaction must be Isolated from other concurrent transactions running in the system. Isolation levels
+* Page 309 - By definition "read committed" disallows dirty read anomalies, "repeatable read" disallows dirty read and
+  nonrepeatable read, and serializable disallows all anomalies. Furthermore, PostgreSQL also disallows phantom read from
+  repeatable read isolation level.
+* Page 309 - SSI - serializable snapshot isolation - https://wiki.postgresql.org/wiki/Serializable and 
+  https://wiki.postgresql.org/wiki/SSI
+* Page 311 - Concurrent updates to the same row - then the result depends on the isolation level. With "read committed" the
+  updates will run one after the other (the first one blocks the second). With "repeatable read" we get
+  "could not serialize access due to concurrent update" (and similarly for "serializable").
+* Page 312 - Replace counters with rows, so instead of incrementing a counter we add a row to the table. The "insert" instead
+  of "update" avoids locking the data, but now we need to calculate the current value each time.
+* Page 316 - Avoid/minimize concurrent activity to shared resources
 
 # Errata
 * Page 93 - "races table has eight column." => races table has eight columns."
@@ -149,4 +215,9 @@ https://theartofpostgresql.com/
 * Page 220 - Is there missing a "in case" in "...the easiest way around this _____ you already committed the data previously"
 * Page 235 - Perhaps add "within a category" in "only publish with a title once ___ in the whole history of 
   our publication system" to make it more explicit
+* Page 268 - "interested into points" => "interested in points"
+* Page 275 - Perhaps rephrase - "we only measure time spent by ran queries," => "we only measure time spent by executed queries,"
+* Page 279 - Perhaps rephrase - "you are interested into." => "you are interested in."
+* Page 299 - "by assigning them their uname as a nickname for now." this is not what the statement does. It sets it to
+  'Robin Goodfellow' which is not the uname. We update "nickname" to "uname" on page 300.
 * Page 378 - `\index{Operators!%}` looks like a LaTeX error. The same kind of error on 379.
