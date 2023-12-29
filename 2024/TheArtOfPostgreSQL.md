@@ -205,6 +205,30 @@ from deleted_rows;
 * Page 312 - Replace counters with rows, so instead of incrementing a counter we add a row to the table. The "insert" instead
   of "update" avoids locking the data, but now we need to calculate the current value each time.
 * Page 316 - Avoid/minimize concurrent activity to shared resources
+* Page 318 - Caching using: another table, views, materialized views (which we can refresh when we do cache invalidation). 
+  Cache invalidation can happen on a scheduled interval or event-based using triggers.
+* Page 326 - `on conflict` in `insert into` commands
+* Page 328 - Event triggers
+* Page 329 - Listen to and notify with messages on the channel
+* Page 335 - `json_populate_record` function
+* Page 337 - An application using PostgreSQL notifications must be capable of missing events.
+* Page 340 - Batch update (using two CTEs to update and insert data):
+  * load the new version of the data to a table/temporary table
+  * update existing data
+  * insert new data
+* Page 342 - Concurrency patterns to avoid "duplicate key" errors on insert: only do one batch update at a time (using
+  explicit locking) or use `on conflict` clause on the insert
+* Page 347 - "They taught me early on that if you get your data model right, every feature is easier."
+* Page 351 - A PostgreSQL extension is a set of SQL objects that you can add to PostgreSQL catalogs.
+* Page 354 - Extensions live in a given database.
+* Page 355 - One can use `pg_available_extensions` to list the installed extensions
+* Page 362 - The hstore extension implements a data type for storing sets of key/value pairs in a single PostgreSQL value
+  (think simplified JSON).
+* Page 367 - `populate_record()` to cast data from hstore to a regular record.
+* Page 368 - hstore is still useful even when we have JSON - the ability to cast from and to a record and the difference
+  operator.
+* Page 376 - Fuzzy string matching approaches in PostgreSQL. `pg_trgm`  provides functions and operators for determining the
+  similarity of alphanumeric text based on trigram matching.
 
 # Errata
 * Page 93 - "races table has eight column." => races table has eight columns."
@@ -220,4 +244,11 @@ from deleted_rows;
 * Page 279 - Perhaps rephrase - "you are interested into." => "you are interested in."
 * Page 299 - "by assigning them their uname as a nickname for now." this is not what the statement does. It sets it to
   'Robin Goodfellow' which is not the uname. We update "nickname" to "uname" on page 300.
+* Page 322 - Missing space between "command" and "CREATE TRIGGER" in "manual page for the commandCREATE TRIGGER."
+* Page 336 - "; alter all," => "; after all,"
+* Page 347 - I know it is a quote, but I think there is an "as" missing in "I use the database ___ a design tool"
+* Page 363 - I had to read https://www.postgresql.org/docs/current/hstore.html to understand that `('a=>1,a=>2'::hstore)`
+  would only store one of the values for `a`. From the documentation "Each key in an hstore is unique. If you declare an
+  hstore with duplicate keys, only one will be stored in the hstore and there is no guarantee as to which will be kept"
+* Page 365 - "procedude" => "procedure"
 * Page 378 - `\index{Operators!%}` looks like a LaTeX error. The same kind of error on 379.
