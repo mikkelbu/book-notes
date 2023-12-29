@@ -229,6 +229,10 @@ from deleted_rows;
   operator.
 * Page 376 - Fuzzy string matching approaches in PostgreSQL. `pg_trgm`  provides functions and operators for determining the
   similarity of alphanumeric text based on trigram matching.
+* Page 385 - `intarray` extension for indexing of tags. Using `gin` index with `gin__int_ops`
+* Page 390 - The point data type for e.g. coordinates  of longitude and latitude.
+* Page 392 - group by using a function - `group by replace(replace(name, 'The ', ''), 'And', '&')` - and array functions in
+  the select - `array_to_string(array_agg(distinct(name) order by name), ', ')`
 
 # Errata
 * Page 93 - "races table has eight column." => races table has eight columns."
@@ -251,4 +255,5 @@ from deleted_rows;
   would only store one of the values for `a`. From the documentation "Each key in an hstore is unique. If you declare an
   hstore with duplicate keys, only one will be stored in the hstore and there is no guarantee as to which will be kept"
 * Page 365 - "procedude" => "procedure"
+* Page 376 - "dictionnaries" => "dictionaries"
 * Page 378 - `\index{Operators!%}` looks like a LaTeX error. The same kind of error on 379.
