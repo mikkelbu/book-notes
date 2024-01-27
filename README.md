@@ -14,6 +14,7 @@ This repository contains personal notes for some of the technical books I've rea
 
 # 2024
 * [The Art of PostgreSQL](2024/TheArtOfPostgreSQL.md) by Dimitri Fontaine
+* [Mastering PostgreSQL 15](2024/MasteringPostgreSQL15.md) by Hans-Jürgen Schönig
 
 # Books to Read
 
