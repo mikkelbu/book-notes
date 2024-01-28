@@ -42,6 +42,18 @@ Code at https://github.com/PacktPublishing/Mastering-PostgreSQL-15
 
 # Making Use of Indexes
 * Page 49 - One cannot have good performance without proper indexing
+* Page 50 - Creating test data for examining indexes
+* Page 51 - `EXPLAIN`
+* Page 52 - Four stages in execution: parser, rewriter, optimizer, and plan (that is executed)
+* Page 53 - Calculating cost of query (abstract number). Use ` SELECT pg_relation_size('[table_name]') / 8192.0 `
+  to calculate number of blocks and later the cost.
+* Page 56 - Indexes take space (and time on writes as the index need to be in sync)
+* Page 57 - An index can be used in `ORDER BY` or by `min`/`max` functions
+* Page 59 - `UNION` can be faster than `OR` in queries
+* Page 59 - Bit map scans can be used: to avoid fetching the same block multiple times and to combine relatively bad conditions
+* Page 61 - Table scans can occur if PostgreSQL determines (from the statistics) it needs to examine most rows in the table
+* Page 62 - From PostgreSQL version 13 indexes can de-duplicate index entries to save space - leading to improved efficiency
+  due to higher cache hit rates and access times
 
 
 # Errata
@@ -53,3 +65,5 @@ Code at https://github.com/PacktPublishing/Mastering-PostgreSQL-15
 * Page 24 - "BEGI" => "BEGIN"
 * Page 48 - There are no answers at https://github.com/PacktPublishing/Mastering-PostgreSQL-15-, some
   can be found at https://github.com/PacktPublishing/Mastering-PostgreSQL-13-Fourth-Edition/blob/master/Assessment.pdf
+* Page 51 - `87.967 ms` is not `... more than 100 milliseconds`
+* Page 58 - Is the `v` in `idx_idv` a typo?
